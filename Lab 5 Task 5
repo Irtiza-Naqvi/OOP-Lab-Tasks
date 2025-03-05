@@ -1,0 +1,80 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Doctor {
+private:
+    string name;
+    string specialization;
+    int experience;
+
+public:
+    Doctor(string name, string specialization, int experience) {
+        this->name = name;
+        this->specialization = specialization;
+        this->experience = experience;
+    }
+
+    void display() const {
+        cout << "Doctor Name: " << name << ", Specialization: " << specialization
+             << ", Experience: " << experience << " years" << endl;
+    }
+
+    string getName() const {
+        return name;
+    }
+};
+
+class Hospital {
+private:
+    string hospitalName;
+    Doctor** doctors;
+    int numDoctors;
+
+public:
+    Hospital(string name) {
+        hospitalName = name;
+        numDoctors = 0;
+        doctors = new Doctor*[10];
+    }
+
+    void addDoctor(Doctor* doc) {
+        if (numDoctors < 10) {
+            doctors[numDoctors++] = doc;
+        } else {
+            cout << "Cannot add more doctors to " << hospitalName << "!" << endl;
+        }
+    }
+
+    void display() const {
+        cout << "Hospital: " << hospitalName << endl;
+        cout << "Doctors currently working here:" << endl;
+        for (int i = 0; i < numDoctors; i++) {
+            doctors[i]->display();
+        }
+    }
+
+    ~Hospital() {
+        delete[] doctors;
+    }
+};
+
+int main() {
+    Doctor d1("Alice", "Cardiologist", 15);
+    Doctor d2("Bob", "Neurologist", 10);
+    Doctor d3("Charlie", "Orthopedic", 8);
+    Hospital h1("City General Hospital");
+    Hospital h2("Metro Healthcare");
+    h1.addDoctor(&d1);
+    h1.addDoctor(&d2);
+    h2.addDoctor(&d3);
+    h2.addDoctor(&d1);
+    cout << "Hospital 1 Details:\n";
+    h1.display();
+    cout << endl;
+
+    cout << "Hospital 2 Details:\n";
+    h2.display();
+
+    return 0;
+}
