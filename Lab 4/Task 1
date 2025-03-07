@@ -1,0 +1,50 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Car {
+    string brand;
+    string model;
+    double rprice;
+    bool available;
+
+public:
+    Car() {
+        brand = "Unknown";
+        model = "Generic";
+        rprice = 0.0;
+        available = true;
+    }
+
+    void display() {
+        cout << "---------- Welcome ----------" << endl;
+        cout << "Brand Name: " << brand << endl;
+        cout << "Model: " << model << endl;
+        cout << "Rental Price: " << rprice << endl;
+        cout << "Availability: " << (available ? "Yes" : "No") << endl;
+    }
+
+    void updateDetails(string a, string b, float x, bool y) {
+        brand = a;
+        model = b;
+        rprice = x;
+        available = y;
+    }
+
+    void rentalRequest() {
+        if (available == true) {
+            cout << "Car available for rent." << endl;
+        } else {
+            cout << "Car is not available." << endl;
+        }
+    }
+};
+
+int main() {
+    Car c1;
+    c1.display();
+    c1.updateDetails("City", "2013", 60000.0, true);
+    c1.display();
+    c1.rentalRequest();
+    return 0;
+}
