@@ -1,0 +1,214 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Ticket {
+protected:
+    int ticketID;
+    char passengerName[50];
+    float price;
+    char date[15];
+    char destination[50];
+    bool isReserved;
+
+public:
+    Ticket() {
+        ticketID = 0;
+        strcpy(passengerName, "Unknown");
+        price = 0.0;
+        strcpy(date, "N/A");
+        strcpy(destination, "N/A");
+        isReserved = false;
+    }
+
+    virtual void reserve() {
+        isReserved = true;
+        cout << "Ticket reserved successfully.\n";
+    }
+
+    virtual void cancel() {
+        if (isReserved) {
+            isReserved = false;
+            cout << "Ticket cancelled successfully.\n";
+        } else {
+            cout << "Ticket is not reserved yet.\n";
+        }
+    }
+
+    virtual void displayTicketInfo() {
+        cout << "\nTicket ID: " << ticketID << endl;
+        cout << "Passenger Name: " << passengerName << endl;
+        cout << "Price: $" << price << endl;
+        cout << "Date: " << date << endl;
+        cout << "Destination: " << destination << endl;
+    }
+
+    void inputBasicInfo() {
+        cout << "Enter Ticket ID: ";
+        cin >> ticketID;
+        cin.ignore();
+
+        cout << "Enter Passenger Name: ";
+        cin.getline(passengerName, 50);
+
+        cout << "Enter Price: ";
+        cin >> price;
+        cin.ignore();
+
+        cout << "Enter Date (dd-mm-yyyy): ";
+        cin.getline(date, 15);
+
+        cout << "Enter Destination: ";
+        cin.getline(destination, 50);
+    }
+};
+
+class FlightTicket : public Ticket {
+private:
+    char airlineName[50];
+    char flightNumber[20];
+    char seatClass[20];
+
+public:
+    void inputFlightDetails() {
+        inputBasicInfo();
+        cout << "Enter Airline Name: ";
+        cin.getline(airlineName, 50);
+
+        cout << "Enter Flight Number: ";
+        cin.getline(flightNumber, 20);
+
+        cout << "Enter Seat Class (Economy/Business): ";
+        cin.getline(seatClass, 20);
+    }
+
+    void displayTicketInfo() override {
+        Ticket::displayTicketInfo();
+        cout << "Airline: " << airlineName << endl;
+        cout << "Flight Number: " << flightNumber << endl;
+        cout << "Seat Class: " << seatClass << endl;
+    }
+};
+
+class TrainTicket : public Ticket {
+private:
+    char trainNumber[20];
+    char coachType[20];
+    char departureTime[10];
+    int seatNumber;
+
+public:
+    TrainTicket() : seatNumber(0) {}
+
+    void reserve() override {
+        seatNumber = 1 + (rand() % 100); // Auto-assign seat
+        isReserved = true;
+        cout << "Train seat auto-assigned: " << seatNumber << endl;
+    }
+
+    void inputTrainDetails() {
+        inputBasicInfo();
+        cout << "Enter Train Number: ";
+        cin.getline(trainNumber, 20);
+
+        cout << "Enter Coach Type (Sleeper/AC): ";
+        cin.getline(coachType, 20);
+
+        cout << "Enter Departure Time (HH:MM): ";
+        cin.getline(departureTime, 10);
+    }
+
+    void displayTicketInfo() override {
+        Ticket::displayTicketInfo();
+        cout << "Train Number: " << trainNumber << endl;
+        cout << "Coach Type: " << coachType << endl;
+        cout << "Departure Time: " << departureTime << endl;
+        if (isReserved)
+            cout << "Seat Number: " << seatNumber << endl;
+    }
+};
+
+class BusTicket : public Ticket {
+private:
+    char busCompany[50];
+    int seatNumber;
+
+public:
+    void inputBusDetails() {
+        inputBasicInfo();
+        cout << "Enter Bus Company: ";
+        cin.getline(busCompany, 50);
+
+        cout << "Enter Seat Number: ";
+        cin >> seatNumber;
+        cin.ignore();
+    }
+
+    void cancel() override {
+        if (isReserved) {
+            cout << "Bus ticket cancelled. Full refund provided.\n";
+            isReserved = false;
+        } else {
+            cout << "No reservation found to cancel.\n";
+        }
+    }
+
+    void displayTicketInfo() override {
+        Ticket::displayTicketInfo();
+        cout << "Bus Company: " << busCompany << endl;
+        cout << "Seat Number: " << seatNumber << endl;
+    }
+};
+
+class ConcertTicket : public Ticket {
+private:
+    char artistName[50];
+    char venue[50];
+    char seatType[20];
+
+public:
+    void inputConcertDetails() {
+        inputBasicInfo();
+        cout << "Enter Artist Name: ";
+        cin.getline(artistName, 50);
+
+        cout << "Enter Venue: ";
+        cin.getline(venue, 50);
+
+        cout << "Enter Seat Type (VIP/Regular): ";
+        cin.getline(seatType, 20);
+    }
+
+    void displayTicketInfo() override {
+        Ticket::displayTicketInfo();
+        cout << "Artist: " << artistName << endl;
+        cout << "Venue: " << venue << endl;
+        cout << "Seat Type: " << seatType << endl;
+    }
+};
+
+int main() {
+    FlightTicket ft;
+    TrainTicket tt;
+    BusTicket bt;
+    ConcertTicket ct;
+    cout << "\n--- Flight Ticket Booking ---\n";
+    ft.inputFlightDetails();
+    ft.reserve();
+    ft.displayTicketInfo();
+    cout << "\n--- Train Ticket Booking ---\n";
+    tt.inputTrainDetails();
+    tt.reserve();
+    tt.displayTicketInfo();
+    cout << "\n--- Bus Ticket Booking ---\n";
+    bt.inputBusDetails();
+    bt.reserve();
+    bt.displayTicketInfo();
+    bt.cancel();
+    cout << "\n--- Concert Ticket Booking ---\n";
+    ct.inputConcertDetails();
+    ct.reserve();
+    ct.displayTicketInfo();
+
+    return 0;
+}
