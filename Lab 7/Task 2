@@ -1,0 +1,134 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Product {
+protected:
+    int productID;
+    string productName;
+    float price;
+    int stockQuantity;
+
+public:
+    Product(int id, const string& name, float pr, int stock = 0)
+        : productID(id), productName(name), price(pr), stockQuantity(stock) {}
+
+    virtual float applyDiscount() {
+        return price;
+    }
+
+    virtual float calculateTotalPrice(int quantity) {
+        return applyDiscount() * quantity;
+    }
+
+    virtual void displayProductInfo() const {
+        cout << "Product ID: " << productID << "\n"
+             << "Name: " << productName << "\n"
+             << "Price: $" << price << "\n"
+             << "Stock: " << stockQuantity << "\n";
+    }
+
+    float getPrice() const {
+        return price;
+    }
+
+    friend float operator+(const Product& p1, const Product& p2) {
+        return p1.price + p2.price;
+    }
+
+    friend ostream& operator<<(ostream& os, const Product& p) {
+        os << "Product ID: " << p.productID << "\n"
+           << "Name: " << p.productName << "\n"
+           << "Price: $" << p.price << "\n"
+           << "Stock: " << p.stockQuantity << "\n";
+        return os;
+    }
+
+    virtual ~Product() {}
+};
+
+class Electronics : public Product {
+    int warrantyPeriod;
+    string brand;
+
+public:
+    Electronics(int id, const string& name, float pr, int stock,
+                int warranty, const string& br)
+        : Product(id, name, pr, stock), warrantyPeriod(warranty), brand(br) {}
+
+    void displayProductInfo() const override {
+        Product::displayProductInfo();
+        cout << "Brand: " << brand << "\n"
+             << "Warranty: " << warrantyPeriod << " months\n";
+    }
+};
+
+class Clothing : public Product {
+    string size, color, fabricMaterial;
+
+public:
+    Clothing(int id, const string& name, float pr, int stock,
+             const string& sz, const string& clr, const string& fabric)
+        : Product(id, name, pr, stock), size(sz), color(clr), fabricMaterial(fabric) {}
+
+    float applyDiscount() override {
+        return price * 0.85f;
+    }
+};
+
+class FoodItem : public Product {
+    string expirationDate;
+    int calories;
+
+public:
+    FoodItem(int id, const string& name, float pr, int stock,
+             const string& expDate, int cal)
+        : Product(id, name, pr, stock), expirationDate(expDate), calories(cal) {}
+
+    float calculateTotalPrice(int quantity) override {
+        float unitPrice = price;
+        if (quantity > 10) {
+            unitPrice *= 0.9f;
+        }
+        return unitPrice * quantity;
+    }
+};
+
+class Book : public Product {
+    string author, genre;
+
+public:
+    Book(int id, const string& name, float pr, int stock,
+         const string& auth, const string& gen)
+        : Product(id, name, pr, stock), author(auth), genre(gen) {}
+
+    void displayProductInfo() const override {
+        Product::displayProductInfo();
+        cout << "Author: " << author << "\n"
+             << "Genre: " << genre << "\n";
+    }
+};
+
+int main() {
+    Electronics laptop(101, "Laptop", 1200.0, 5, 24, "Dell");
+    Clothing tshirt(102, "T-Shirt", 30.0, 20, "L", "Blue", "Cotton");
+    FoodItem apples(103, "Apples", 2.5, 50, "2025-06-10", 52);
+    Book novel(104, "1984", 15.0, 10, "George Orwell", "Dystopian");
+
+    cout << "\n--- Electronics ---\n";
+    laptop.displayProductInfo();
+
+    cout << "\n--- Clothing ---\n";
+    cout << "Price after discount: $" << tshirt.applyDiscount() << "\n";
+
+    cout << "\n--- FoodItem ---\n";
+    cout << "Total price for 12 apples: $" << apples.calculateTotalPrice(12) << "\n";
+
+    cout << "\n--- Book ---\n";
+    cout << novel;
+
+    float combinedPrice = tshirt + novel;
+    cout << "\nCombined price of T-Shirt and Book: $" << combinedPrice << "\n";
+
+    return 0;
+}
