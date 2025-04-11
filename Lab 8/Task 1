@@ -1,0 +1,92 @@
+#include <iostream>
+#include <cmath>
+#include <stdexcept>
+using namespace std;
+
+class Complex {
+private:
+    double real;
+    double imag;
+
+public:
+    Complex(double r = 0.0, double i = 0.0) : real(r), imag(i) {}
+
+    double getReal() const { return real; }
+    double getImag() const { return imag; }
+
+    Complex operator+(const Complex& other) const {
+        return Complex(real + other.real, imag + other.imag);
+    }
+
+    Complex operator-(const Complex& other) const {
+        return Complex(real - other.real, imag - other.imag);
+    }
+
+    Complex operator*(const Complex& other) const {
+        return Complex(
+            real * other.real - imag * other.imag,
+            real * other.imag + imag * other.real
+        );
+    }
+
+    Complex operator/(const Complex& other) const {
+        double denominator = other.real * other.real + other.imag * other.imag;
+        if (denominator == 0) {
+            throw runtime_error("Division by zero in complex number operation");
+        }
+        return Complex(
+            (real * other.real + imag * other.imag) / denominator,
+            (imag * other.real - real * other.imag) / denominator
+        );
+    }
+
+    friend double magnitude(const Complex& c);
+
+    friend ostream& operator<<(ostream& os, const Complex& c);
+};
+
+double magnitude(const Complex& c) {
+    return sqrt(c.real * c.real + c.imag * c.imag);
+}
+
+ostream& operator<<(ostream& os, const Complex& c) {
+    if (c.imag >= 0) {
+        os << "(" << c.real << " + " << c.imag << "i)";
+    } else {
+        os << "(" << c.real << " - " << -c.imag << "i)";
+    }
+    return os;
+}
+
+int main() {
+    Complex c1(3.0, 4.0);
+    Complex c2(1.0, -2.0);
+    Complex c3(0.0, 1.0);
+    Complex c4(2.0, 0.0);
+
+    cout << "Complex Number Arithmetic:" << endl;
+    cout << "c1 = " << c1 << endl;
+    cout << "c2 = " << c2 << endl;
+    cout << "c3 = " << c3 << endl;
+    cout << "c4 = " << c4 << endl << endl;
+
+    cout << "Addition: c1 + c2 = " << c1 + c2 << endl;
+    cout << "Subtraction: c1 - c2 = " << c1 - c2 << endl;
+    cout << "Multiplication: c1 * c2 = " << c1 * c2 << endl;
+    
+    try {
+        cout << "Division: c1 / c2 = " << c1 / c2 << endl;
+    } catch (const runtime_error& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
+
+    cout << "Multiplication with real: c1 * c4 = " << c1 * c4 << endl;
+    cout << "Division by real: c1 / c4 = " << c1 / c4 << endl << endl;
+    cout << "Magnitude (absolute value):" << endl;
+    cout << "|c1| = " << magnitude(c1) << endl;
+    cout << "|c2| = " << magnitude(c2) << endl;
+    cout << "|c3| = " << magnitude(c3) << endl;
+    cout << "|c4| = " << magnitude(c4) << endl;
+
+    return 0;
+}
