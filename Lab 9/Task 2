@@ -1,0 +1,81 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class MenuItem {
+protected:
+    string dishName;
+    double price;
+
+public:
+    MenuItem(const string& name, double p) : dishName(name), price(p) {}
+    virtual ~MenuItem() {}
+
+    virtual void showDetails() const = 0;
+    virtual void prepare() const = 0;
+};
+
+class Appetizer : public MenuItem {
+private:
+    string dippingSauce;
+
+public:
+    Appetizer(const string& name, double p, const string& sauce) 
+        : MenuItem(name, p), dippingSauce(sauce) {}
+
+    void showDetails() const override {
+        cout << "Appetizer: " << dishName << endl;
+        cout << "Price: $" << price << endl;
+        cout << "Comes with " << dippingSauce << " dipping sauce" << endl;
+    }
+
+    void prepare() const override {
+        cout << "Preparing " << dishName << ":" << endl;
+        cout << "1. Plate the appetizer" << endl;
+        cout << "2. Add " << dippingSauce << " sauce on the side" << endl;
+        cout << "3. Garnish and serve immediately" << endl;
+    }
+};
+
+class MainCourse : public MenuItem {
+private:
+    string sideDish;
+
+public:
+    MainCourse(const string& name, double p, const string& side) 
+        : MenuItem(name, p), sideDish(side) {}
+
+    void showDetails() const override {
+        cout << "Main Course: " << dishName << endl;
+        cout << "Price: $" << price << endl;
+        cout << "Includes " << sideDish << " as a side" << endl;
+    }
+
+    void prepare() const override {
+        cout << "Preparing " << dishName << ":" << endl;
+        cout << "1. Cook the main protein" << endl;
+        cout << "2. Prepare " << sideDish << endl;
+        cout << "3. Plate together with garnish" << endl;
+    }
+};
+
+int main() {
+    MenuItem* items[2];
+    items[0] = new Appetizer("Bruschetta", 8.99, "garlic aioli");
+    items[1] = new MainCourse("Grilled Salmon", 22.99, "roasted vegetables");
+
+    
+    for (int i = 0; i < 2; i++) {
+        cout << "---------------------" << endl;
+        items[i]->showDetails();
+        cout << "\nCooking Instructions:" << endl;
+        items[i]->prepare();
+        cout << "---------------------" << endl << endl;
+    }
+    
+    for (int i = 0; i < 2; i++) {
+        delete items[i];
+    }
+
+    return 0;
+}
