@@ -1,0 +1,122 @@
+COURSE.h :
+#ifndef COURSE_H
+#define COURSE_H
+
+#include <string>
+using namespace std;
+
+class Course {
+protected:
+    string courseCode;
+    int credits;
+
+public:
+    Course(string code, int credit);
+    virtual void displayInfo() = 0;
+    virtual double calculateGrade() = 0;
+    virtual ~Course() {}
+};
+
+#endif
+
+LECTURECOURSE.h :
+#ifndef LECTURECOURSE_H
+#define LECTURECOURSE_H
+
+#include "Course.h"
+
+class LectureCourse : public Course {
+public:
+    LectureCourse(string code, int credit);
+    void displayInfo() override;
+    double calculateGrade() override;
+};
+
+#endif
+
+LABCOURSE.h :
+#ifndef LABCOURSE_H
+#define LABCOURSE_H
+
+#include "Course.h"
+
+class LabCourse : public Course {
+public:
+    LabCourse(string code, int credit);
+    void displayInfo() override;
+    double calculateGrade() override;
+};
+
+#endif
+
+
+COURSE.cpp :
+#include "Course.h"
+
+Course::Course(string code, int credit) {
+    courseCode = code;
+    credits = credit;
+}
+
+
+LECTURECOURS.cpp :
+#include <iostream>
+#include "LectureCourse.h"
+
+using namespace std;
+
+LectureCourse::LectureCourse(string code, int credit)
+    : Course(code, credit) {}
+
+void LectureCourse::displayInfo() {
+    cout << "Lecture Course: " << courseCode << ", Credits: " << credits << endl;
+}
+
+double LectureCourse::calculateGrade() {
+    double midterm = 40.0;
+    double finalExam = 50.0;
+    double attendance = 10.0;
+    return midterm + finalExam + attendance;
+}
+
+
+LABCOURSE.cpp :
+#include <iostream>
+#include "LabCourse.h"
+
+using namespace std;
+
+LabCourse::LabCourse(string code, int credit)
+    : Course(code, credit) {}
+
+void LabCourse::displayInfo() {
+    cout << "Lab Course: " << courseCode << ", Credits: " << credits << endl;
+}
+
+double LabCourse::calculateGrade() {
+    double labWork = 60.0;
+    double report = 20.0;
+    double viva = 20.0;
+    return labWork + report + viva;
+}
+
+
+MAIN.cpp :
+#include <iostream>
+#include "LectureCourse.h"
+#include "LabCourse.h"
+
+using namespace std;
+
+int main() {
+    Course* c1 = new LectureCourse("CS101", 3);
+    Course* c2 = new LabCourse("CS101L", 1);
+    c1->displayInfo();
+    cout << "Final Grade: " << c1->calculateGrade() << endl << endl;
+    c2->displayInfo();
+    cout << "Final Grade: " << c2->calculateGrade() << endl;
+    delete c1;
+    delete c2;
+
+    return 0;
+}
