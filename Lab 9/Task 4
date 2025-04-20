@@ -1,0 +1,113 @@
+WEATHERSENSOR.h :
+#ifndef WEATHERSENSOR_H
+#define WEATHERSENSOR_H
+
+#include <string>
+using namespace std;
+
+class WeatherSensor {
+public:
+    virtual void readData() = 0;
+    virtual void displayReport() = 0;
+    virtual ~WeatherSensor() {}
+};
+
+#endif
+
+
+THERMOMETER.h :
+#ifndef THERMOMETER_H
+#define THERMOMETER_H
+
+#include "WeatherSensor.h"
+
+class Thermometer : public WeatherSensor {
+private:
+    double temperature;
+
+public:
+    Thermometer();
+    void readData() override;
+    void displayReport() override;
+};
+
+#endif
+
+
+BAROMETER.h :
+#ifndef BAROMETER_H
+#define BAROMETER_H
+
+#include "WeatherSensor.h"
+
+class Barometer : public WeatherSensor {
+private:
+    double pressure;
+
+public:
+    Barometer();
+    void readData() override;
+    void displayReport() override;
+};
+
+#endif
+
+
+THERMOMETER.cpp :
+#include <iostream>
+#include "Thermometer.h"
+
+using namespace std;
+
+Thermometer::Thermometer() : temperature(0.0) {}
+
+void Thermometer::readData() {
+    temperature = 25.3;
+}
+
+void Thermometer::displayReport() {
+    cout << "Thermometer Report:" << endl;
+    cout << "Temperature: " << temperature << "°C" << endl;
+}
+
+
+BAROMETER.cpp :
+#include <iostream>
+#include "Barometer.h"
+
+using namespace std;
+
+Barometer::Barometer() : pressure(0.0) {}
+
+void Barometer::readData() {
+    pressure = 1013.25;
+}
+
+void Barometer::displayReport() {
+    cout << "Barometer Report:" << endl;
+    cout << "Pressure: " << pressure << " hPa" << endl;
+}
+
+
+MAIN.cpp :
+#include <iostream>
+#include "Thermometer.h"
+#include "Barometer.h"
+using namespace std;
+
+int main() {
+    WeatherSensor* s1 = new Thermometer();
+    WeatherSensor* s2 = new Barometer();
+
+    s1->readData();
+    s1->displayReport();
+
+    cout << endl;
+
+    s2->readData();
+    s2->displayReport();
+    delete s1;
+    delete s2;
+
+    return 0;
+}
