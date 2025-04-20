@@ -1,0 +1,66 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Shipment {
+protected:
+    string trackingNumber;
+    double weight;
+
+public:
+    Shipment(const string& tn, double w) : trackingNumber(tn), weight(w) {}
+    
+    virtual void estimateDeliveryTime() const = 0;
+    virtual void showDetails() const = 0;
+    
+    virtual ~Shipment() {}
+};
+
+class AirFreight : public Shipment {
+public:
+    AirFreight(const string& tn, double w) : Shipment(tn, w) {}
+    
+    void estimateDeliveryTime() const override {
+        double days = weight < 10 ? 1 : (weight < 50 ? 2 : 3);
+        cout << "Estimated delivery time: " << days << " days by air" << endl;
+    }
+    
+    void showDetails() const override {
+        cout << "Air Freight Shipment Details:" << endl;
+        cout << "Tracking Number: " << trackingNumber << endl;
+        cout << "Weight: " << weight << " kg" << endl;
+    }
+};
+
+class GroundShipment : public Shipment {
+public:
+    GroundShipment(const string& tn, double w) : Shipment(tn, w) {}
+    
+    void estimateDeliveryTime() const override {
+        double days = weight < 10 ? 3 : (weight < 50 ? 5 : 7);
+        cout << "Estimated delivery time: " << days << " days by ground" << endl;
+    }
+    
+    void showDetails() const override {
+        cout << "Ground Shipment Details:" << endl;
+        cout << "Tracking Number: " << trackingNumber << endl;
+        cout << "Weight: " << weight << " kg" << endl;
+    }
+};
+
+int main() {
+    Shipment* airShipment = new AirFreight("AIR12345", 25.5);
+    Shipment* groundShipment = new GroundShipment("GRN67890", 45.0);
+    
+    cout << "Processing Air Freight:" << endl;
+    airShipment->showDetails();
+    airShipment->estimateDeliveryTime();
+    
+    cout << "\nProcessing Ground Shipment:" << endl;
+    groundShipment->showDetails();
+    groundShipment->estimateDeliveryTime();
+    delete airShipment;
+    delete groundShipment;
+    
+    return 0;
+}
